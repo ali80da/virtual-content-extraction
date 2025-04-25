@@ -1,0 +1,89 @@
+﻿
+
+@using Client.Core.Services.Extraction
+
+@inject ITextExtractionService TextExtractionService
+@inject IJSRuntime JSRuntime
+@inject ISnackbar Snackbar
+
+<div class="upload-container">
+    <MudPaper Class="upload-box" Elevation="3">
+        <MudText Typo="Typo.h6" Align="Align.Center" Class="upload-header">Please upload an image file</MudText>
+
+        <MudText Typo="Typo.body2" Align="Align.Center" Class="upload-description">
+            Select an image from your device and click the button to upload it. We will extract text from the image.
+        </MudText>
+
+        <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="UploadFiles" Accept="image/*" Class="file-upload">
+            <ActivatorContent>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                           Class="upload-button">
+                    Upload Image
+                </MudButton>
+            </ActivatorContent>
+        </MudFileUpload>
+
+        @if (!string.IsNullOrEmpty(extractedText))
+        {
+            <MudText Typo="Typo.body2" Color="Color.Info" Class="file-info">
+                <b>Extracted Text:</b> <br />
+                @extractedText
+            </MudText>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="DownloadTextFile">
+                Download Text
+            </MudButton>
+        }
+    </MudPaper>
+</div>
+
+@code {
+    private IBrowserFile selectedFile;
+    private string extractedText;
+
+    private async Task UploadFiles(IEnumerable<IBrowserFile> files)
+    {
+        foreach (var file in files)
+        {
+            try
+            {
+                selectedFile = file;
+
+                // ارسال به سرویس OCR برای استخراج متن
+                extractedText = await TextExtractionService.ExtractTextFromPicture(file);
+
+                Snackbar.Add($"File {file.Name} has been successfully selected and processed.", Severity.Success);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"An error occurred: {ex.Message}", Severity.Error);
+            }
+        }
+
+        StateHasChanged(); // بروزرسانی UI پس از پردازش
+    }
+
+    // private async Task DownloadTextFile()
+    // {
+    //     if (!string.IsNullOrEmpty(extractedText))
+    //     {
+    //         فراخوانی JavaScript برای دانلود فایل
+    //         await JSRuntime.InvokeVoidAsync("downloadFile", "extracted_text.txt", extractedText);
+    //     }
+    // }
+
+    private async Task DownloadTextFile()
+    {
+        // ایجاد فایل متنی با استفاده از متن استخراج‌شده
+        var fileName = "extracted_text.txt";
+        var content = extractedText;
+
+        // دانلود فایل از طریق JavaScript
+        await JSRuntime.InvokeVoidAsync("downloadFile", fileName, content);
+    }
+
+
+}

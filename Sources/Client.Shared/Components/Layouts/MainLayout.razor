@@ -1,0 +1,25 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<!-- Layout content goes here -->
+<MudLayout>
+
+    <MudAppBar Elevation="1" Color="Color.Primary">
+
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" />
+        <MudSpacer />
+
+        <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" class="text-white" Edge="Edge.End" Href="custom-auth" />
+
+    </MudAppBar>
+
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+
+
+</MudLayout>
