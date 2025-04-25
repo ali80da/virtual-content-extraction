@@ -114,5 +114,27 @@ namespace Client.Core.Services.Extraction
                 return $"Error occurred: {ex.Message}";
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<string> ExtractTextWithAzureFromPicAsync(string imagePath)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+
+
+
     }
 }

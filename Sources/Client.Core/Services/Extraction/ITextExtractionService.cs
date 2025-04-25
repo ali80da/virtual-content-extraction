@@ -16,4 +16,11 @@ public interface ITextExtractionService
     Task<string> ProcessImageWithTesseract(Stream imageStream);
     Task<string> ExtractTextFromPicture(IBrowserFile file);
 
+
+
+
+
+
+
+    Task<string> ExtractTextWithAzureFromPicAsync(string imagePath);
 }
